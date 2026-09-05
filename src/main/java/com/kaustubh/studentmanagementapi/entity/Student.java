@@ -1,8 +1,5 @@
 package com.kaustubh.studentmanagementapi.entity;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,11 +12,7 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     private String name;
-
-    @Email
-    @NotBlank
     private String email;
 
     public Student() {

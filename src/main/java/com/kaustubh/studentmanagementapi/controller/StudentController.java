@@ -1,6 +1,7 @@
 package com.kaustubh.studentmanagementapi.controller;
 
 
+import com.kaustubh.studentmanagementapi.dto.StudentRequestDTO;
 import com.kaustubh.studentmanagementapi.entity.Student;
 import com.kaustubh.studentmanagementapi.response.ApiResponse;
 import com.kaustubh.studentmanagementapi.service.StudentService;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import jakarta.validation.Valid;
 import com.kaustubh.studentmanagementapi.response.ApiResponse;
+import com.kaustubh.studentmanagementapi.dto.StudentRequestDTO;
+import com.kaustubh.studentmanagementapi.dto.StudentResponseDTO;
 
 import java.util.List;
 
@@ -26,54 +29,82 @@ public class StudentController {
     }
 
     @GetMapping
-    public ApiResponse<List<Student>> getAllStudents() {
+    public ApiResponse<List<StudentResponseDTO>> getAllStudents() {
         List<Student> students = studentService.getAllStudents();
+
+        List<StudentResponseDTO> responseDTOS = students.stream()
+            .map(student -> new StudentResponseDTO(
+                student.getId(),
+                student.getName(),
+                student.getEmail()
+        ))
+                .toList();
 
         return new ApiResponse<>(
                 200,
                 "Students fetched successfully",
-                students
+                responseDTOS
         );
     }
 
 
     @GetMapping("/{id}")
-    public ApiResponse<Student> getStudentById(@PathVariable Long id) {
+    public ApiResponse<StudentResponseDTO> getStudentById(@PathVariable Long id) {
 
         Student student = studentService.getStudentById(id);
 
+        StudentResponseDTO responseDTO = new StudentResponseDTO(
+                student.getId(),
+                student.getName(),
+                student.getEmail()
+        );
+
         return new ApiResponse<>(
-                400,
+                200,
                 "Student fetched successfully",
-                student
+                responseDTO
         );
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Student>> createStudent(
-            @Valid @RequestBody Student student) {
+    public ResponseEntity<ApiResponse<StudentResponseDTO>> createStudent(
+            @Valid @RequestBody StudentRequestDTO studentRequest) {
 
-        Student createdStudent = studentService.createStudent(student);
+        Student createdStudent = studentService.createStudent(studentRequest);
 
-        ApiResponse<Student> response = new ApiResponse<>(
+        StudentResponseDTO responseDTO = new StudentResponseDTO(
+                createdStudent.getId(),
+                createdStudent.getName(),
+                createdStudent.getEmail()
+        );
+
+
+        ApiResponse<StudentResponseDTO> response = new ApiResponse<>(
                 201,
                 "Student created successfully",
-                createdStudent
+                responseDTO
     );
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Student>> updateStudent(
+    public ResponseEntity<ApiResponse<StudentResponseDTO>> updateStudent(
             @PathVariable Long id,
-            @Valid @RequestBody Student studentdetails){
-        Student updatedStudent = studentService.updateStudent(id, studentdetails);
+            @Valid @RequestBody StudentRequestDTO studentRequest){
 
-        ApiResponse<Student> response = new ApiResponse<>(
+        Student updatedStudent = studentService.updateStudent(id, studentRequest);
+
+        StudentResponseDTO responseDTO = new StudentResponseDTO(
+                updatedStudent.getId(),
+                updatedStudent.getName(),
+                updatedStudent.getEmail()
+        );
+
+        ApiResponse<StudentResponseDTO> response = new ApiResponse<>(
                 200,
                 "Student updated successfully",
-                updatedStudent
+                responseDTO
     );
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
