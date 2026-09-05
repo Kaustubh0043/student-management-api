@@ -3,9 +3,11 @@ package com.kaustubh.studentmanagementapi.controller;
 
 import com.kaustubh.studentmanagementapi.entity.Student;
 import com.kaustubh.studentmanagementapi.service.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class StudentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Student createStudent(@RequestBody Student student) {
+    public Student createStudent(@Valid @RequestBody Student student) {
         return studentService.createStudent(student);
     }
 
@@ -40,7 +42,7 @@ public class StudentController {
     @PutMapping("/{id}")
     public Student updateStudent(
             @PathVariable Long id,
-            @RequestBody Student studentDetails) {
+           @Valid @RequestBody Student studentDetails) {
 
         return studentService.updateStudent(id, studentDetails);
     }
