@@ -3,7 +3,9 @@ package com.kaustubh.studentmanagementapi.controller;
 
 import com.kaustubh.studentmanagementapi.entity.Student;
 import com.kaustubh.studentmanagementapi.service.StudentService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -12,19 +14,41 @@ import java.util.List;
 public class StudentController {
 
 
-        private final StudentService studentService;
+    private final StudentService studentService;
 
-        public StudentController(StudentService studentService){
-            this.studentService = studentService;
-        }
+    public StudentController(StudentService studentService) {
+        this.studentService = studentService;
+    }
 
-        @GetMapping
-        public List<Student> getAllStudents(){
-            return studentService.getAllStudents();
-        }
+    @GetMapping
+    public List<Student> getAllStudents() {
+        return studentService.getAllStudents();
+    }
 
-        @PostMapping
-        public Student createStudent(@RequestBody Student student){
-            return studentService.createStudent(student);
-        }
+    @GetMapping("/{id}")
+    public Student getStudentById(@PathVariable Long id) {
+        return studentService.getStudentById(id);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Student createStudent(@RequestBody Student student) {
+        return studentService.createStudent(student);
+    }
+
+
+    @PutMapping("/{id}")
+    public Student updateStudent(
+            @PathVariable Long id,
+            @RequestBody Student studentDetails) {
+
+        return studentService.updateStudent(id, studentDetails);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteStudent(@PathVariable Long id) {
+        studentService.deleteStudent(id);
+    }
 }
+
